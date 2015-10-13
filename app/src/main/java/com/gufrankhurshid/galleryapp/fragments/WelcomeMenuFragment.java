@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.gufrankhurshid.galleryapp.R;
+import com.gufrankhurshid.galleryapp.dao.GalleryImageDAO;
+import com.gufrankhurshid.galleryapp.dao.GalleryImageDAOImpl;
+import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 import com.gufrankhurshid.galleryapp.management.GalleryAppFragment;
 
 /**
@@ -19,6 +22,7 @@ public class WelcomeMenuFragment extends GalleryAppFragment {
     View mainView;
     TextView myTextView;
     Button myButton;
+    GalleryImageDAO galleryImageDAO;
 
     @Nullable
     @Override
@@ -46,5 +50,17 @@ public class WelcomeMenuFragment extends GalleryAppFragment {
                 myTextView.setText("Another Bismillah Hirrahma Nirrahim");
             }
         });
+        galleryImageDAO = new GalleryImageDAOImpl();
+
+        GalleryImage gi = new GalleryImage("file//abc/rat/monalisa.jpg", "Monalisa image was painted by Di Vinci");
+        GalleryImage gi2 = new GalleryImage("file//abc/rat/tajmahal.jpg", "Tak Mahal was made by Shahjahan");
+
+        galleryImageDAO.addGalleryImage(gi);
+        galleryImageDAO.addGalleryImage(gi2);
+
+        System.out.println("Two Images added ");
+
+
+
     }
 }

@@ -3,6 +3,7 @@ package com.gufrankhurshid.galleryapp.dao;
 import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 import com.gufrankhurshid.galleryapp.util.LocalPersistenceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,9 @@ public class GalleryImageDAOImpl implements GalleryImageDAO {
     @Override
     public void addGalleryImage(GalleryImage galleryImage) {
         List<GalleryImage> localGallery = (List<GalleryImage>) localPersistenceManager.load("GALLERY");
+        if (localGallery == null) {
+            localGallery = new ArrayList<>();
+        }
         localGallery.add(galleryImage);
         localPersistenceManager.save("GALLERY", localGallery);
     }
