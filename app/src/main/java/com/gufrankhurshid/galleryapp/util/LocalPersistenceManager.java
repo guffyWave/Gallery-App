@@ -21,7 +21,7 @@ public class LocalPersistenceManager {
     }
 
     public static LocalPersistenceManager getInstance() {
-        synchronized (localPersistenceManager) {
+        synchronized (LocalPersistenceManager.class) {
             if (localPersistenceManager == null) {
                 localPersistenceManager = new LocalPersistenceManager();
                 sharedPreferences = GalleryApp.getAppContext().getSharedPreferences("GALLERYAPP", GalleryApp.MODE_APPEND);
@@ -36,12 +36,16 @@ public class LocalPersistenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         ///---->> convert to json by GSON and then save it.
         editor.putString(key, gson.toJson(value));
+        editor.commit();
     }
 
-    public Object load(String key) {
-        String obtainedString = sharedPreferences.getString(key, null);
+    public Object load(String key, Class cl) {
+        String obtainedString = sharedPreferences.getString(key, "NULL");
         //convert from JSON String to Object
-        return gson.toJson(sharedPreferences.getString(key, null), Object.class);
+        if (!obtainedString.equals("NULL")) {
+            return gson.fromJson(obtainedString, cl);
+        }
+        return null;
     }
 
 

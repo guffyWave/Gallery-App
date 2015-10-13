@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.gufrankhurshid.galleryapp.R;
 import com.gufrankhurshid.galleryapp.dao.GalleryImageDAO;
 import com.gufrankhurshid.galleryapp.dao.GalleryImageDAOImpl;
+import com.gufrankhurshid.galleryapp.dto.Gallery;
 import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 import com.gufrankhurshid.galleryapp.management.GalleryAppFragment;
 
@@ -52,15 +53,20 @@ public class WelcomeMenuFragment extends GalleryAppFragment {
         });
         galleryImageDAO = new GalleryImageDAOImpl();
 
-        GalleryImage gi = new GalleryImage("file//abc/rat/monalisa.jpg", "Monalisa image was painted by Di Vinci");
-        GalleryImage gi2 = new GalleryImage("file//abc/rat/tajmahal.jpg", "Tak Mahal was made by Shahjahan");
+//        GalleryImage gi = new GalleryImage("file//abc/rat/monalisa.jpg", "Monalisa image was painted by Di Vinci");
+//        GalleryImage gi2 = new GalleryImage("file//abc/rat/tajmahal.jpg", "Tak Mahal was made by Shahjahan");
+//
+//        galleryImageDAO.addGalleryImage(gi);
+//        galleryImageDAO.addGalleryImage(gi2);
+//
+//        System.out.println("Two Images added ");
 
-        galleryImageDAO.addGalleryImage(gi);
-        galleryImageDAO.addGalleryImage(gi2);
+        Gallery g = galleryImageDAO.loadGallery();
 
-        System.out.println("Two Images added ");
-
-
+        for (GalleryImage gim :
+                g.getGalleryImageList()) {
+            System.out.println(gim.getFileUri() + " " + gim.getDescription());
+        }
 
     }
 }

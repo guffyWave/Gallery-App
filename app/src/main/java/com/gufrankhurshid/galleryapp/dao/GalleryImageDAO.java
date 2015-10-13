@@ -1,5 +1,6 @@
 package com.gufrankhurshid.galleryapp.dao;
 
+import com.gufrankhurshid.galleryapp.dto.Gallery;
 import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface GalleryImageDAO {
     
-    public List<GalleryImage> loadGallery();
+    public Gallery loadGallery();
 
     public void addGalleryImage(GalleryImage galleryImage);
 

@@ -1,5 +1,6 @@
 package com.gufrankhurshid.galleryapp.dao;
 
+import com.gufrankhurshid.galleryapp.dto.Gallery;
 import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 import com.gufrankhurshid.galleryapp.util.LocalPersistenceManager;
 
@@ -18,24 +19,24 @@ public class GalleryImageDAOImpl implements GalleryImageDAO {
     }
 
     @Override
-    public List<GalleryImage> loadGallery() {
-        return (List<GalleryImage>) localPersistenceManager.load("GALLERY");
+    public Gallery loadGallery() {
+        return (Gallery) localPersistenceManager.load("GALLERY", Gallery.class);
     }
 
     @Override
     public void addGalleryImage(GalleryImage galleryImage) {
-        List<GalleryImage> localGallery = (List<GalleryImage>) localPersistenceManager.load("GALLERY");
+        Gallery localGallery = (Gallery) localPersistenceManager.load("GALLERY", Gallery.class);
         if (localGallery == null) {
-            localGallery = new ArrayList<>();
+            localGallery = new Gallery();
         }
-        localGallery.add(galleryImage);
+        localGallery.getGalleryImageList().add(galleryImage);
         localPersistenceManager.save("GALLERY", localGallery);
     }
 
     @Override
     public void clearGallery() {
-        List<GalleryImage> localGallery = (List<GalleryImage>) localPersistenceManager.load("GALLERY");
-        localGallery.clear();
+        Gallery localGallery = (Gallery) localPersistenceManager.load("GALLERY", Gallery.class);
+        localGallery.getGalleryImageList().clear();
         localPersistenceManager.save("GALLERY", localGallery);
     }
 }
