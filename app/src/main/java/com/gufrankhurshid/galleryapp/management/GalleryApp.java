@@ -3,6 +3,8 @@ package com.gufrankhurshid.galleryapp.management;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 /**
  * Created by gufran on 10/10/15.
  */
@@ -16,6 +18,15 @@ public class GalleryApp extends Application {
     public void onCreate() {
         super.onCreate();
         galleryApp = GalleryApp.this;
+
+        //--------->> Initializing Stetho
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 
     public GalleryApp getInstance() {

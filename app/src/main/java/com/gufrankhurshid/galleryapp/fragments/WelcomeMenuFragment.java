@@ -1,18 +1,20 @@
 package com.gufrankhurshid.galleryapp.fragments;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.gufrankhurshid.galleryapp.R;
-import com.gufrankhurshid.galleryapp.dao.GalleryImageDAO;
-import com.gufrankhurshid.galleryapp.dao.GalleryImageDAOImpl;
-import com.gufrankhurshid.galleryapp.dto.Gallery;
-import com.gufrankhurshid.galleryapp.dto.GalleryImage;
 import com.gufrankhurshid.galleryapp.management.GalleryAppFragment;
 
 /**
@@ -21,9 +23,19 @@ import com.gufrankhurshid.galleryapp.management.GalleryAppFragment;
 public class WelcomeMenuFragment extends GalleryAppFragment {
     //----------->>View References
     View mainView;
-    TextView myTextView;
+    // TextView myTextView;
     Button myButton;
-    GalleryImageDAO galleryImageDAO;
+    ImageView imageView;
+
+
+    //------------->>
+
+    int RESULT_LOAD_IMG = 1234;
+
+    FragmentManager fragmentManager;
+
+    EditorDialogFragment editorDialogFragment;
+
 
     @Nullable
     @Override
@@ -34,8 +46,9 @@ public class WelcomeMenuFragment extends GalleryAppFragment {
 
     @Override
     public void referView() {
-        myTextView = (TextView) mainView.findViewById(R.id.myTextView);
+        // myTextView = (TextView) mainView.findViewById(R.id.myTextView);
         myButton = (Button) mainView.findViewById(R.id.myButton);
+        imageView = (ImageView) mainView.findViewById(R.id.imageView);
     }
 
     @Override
@@ -48,25 +61,58 @@ public class WelcomeMenuFragment extends GalleryAppFragment {
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myTextView.setText("Another Bismillah Hirrahma Nirrahim");
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
             }
         });
-        galleryImageDAO = new GalleryImageDAOImpl();
 
-//        GalleryImage gi = new GalleryImage("file//abc/rat/monalisa.jpg", "Monalisa image was painted by Di Vinci");
-//        GalleryImage gi2 = new GalleryImage("file//abc/rat/tajmahal.jpg", "Tak Mahal was made by Shahjahan");
-//
-//        galleryImageDAO.addGalleryImage(gi);
-//        galleryImageDAO.addGalleryImage(gi2);
-//
-//        System.out.println("Two Images added ");
+//        for (GalleryImage gim :
+//                g.getGalleryImageList()) {
+//            System.out.println(gim.getFileUri() + " " + gim.getDescription());
+//        }
 
-        Gallery g = galleryImageDAO.loadGallery();
 
-        for (GalleryImage gim :
-                g.getGalleryImageList()) {
-            System.out.println(gim.getFileUri() + " " + gim.getDescription());
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == RESULT_LOAD_IMG && resultCode == getActivity().RESULT_OK
+                    && null != data) {
+                Uri selectedImage = data.getData();
+
+                System.out.println("Selected Image Path " + getPath(selectedImage));
+
+                fragmentManager = getFragmentManager();
+                editorDialogFragment = new EditorDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("IMAGE_PATH", getPath(selectedImage));
+                editorDialogFragment.setArguments(bundle);
+                editorDialogFragment.show(fragmentManager, "EDITOR_DIALOG_FRAGMENT");
+
+            } else {
+                Toast.makeText(getActivity(), "You haven't picked Image",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG)
+                    .show();
         }
 
     }
+
+    public String getPath(Uri uri) {
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().getContentResolver().query(uri,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        return picturePath;
+    }
+
 }
